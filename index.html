@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vũ Trụ Tương Tác | Khám Phá Không Gian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070b1a;
+  --panel: #111a30;
+  --panel2: #172440;
+  --text: #f0f4ff;
+  --muted: #9eaccb;
+  --cyan: #7de8ff;
+  --purple: #b5a1ff;
+  --pink: #ff9fcb;
+  --line: rgba(180,205,255,.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(ellipse at 15% 10%, #17254a 0, transparent 45%),
+    radial-gradient(ellipse at 85% 50%, #251844 0, transparent 45%),
+    #070b1a;
+}
+#stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+.container { width: min(1120px, 90%); margin: auto; }
+nav {
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(18px);
+  background: rgba(7,11,26,.82);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  min-height: 74px; display: flex; align-items: center;
+  justify-content: space-between; gap: 20px;
+}
+.logo {
+  font: 700 19px 'Space Grotesk', sans-serif;
+  letter-spacing: -1px;
+}
+.logo span { color: var(--cyan); }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { color: var(--muted); font-size: 13px; transition: .25s; }
+.nav-links a:hover { color: var(--cyan); }
+.menu-btn { display: none; background: none; color: white; border: 0; font-size: 24px; }
+.hero {
+  min-height: 690px; display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  align-items: center; gap: 35px; padding: 65px 0 90px;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid var(--line); background: rgba(255,255,255,.04);
+  border-radius: 100px; padding: 8px 14px;
+  color: var(--cyan); font-size: 11px; letter-spacing: 2px;
+}
+.pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 14px var(--cyan); }
+h1 {
+  font: 700 clamp(42px,6vw,75px)/1.1 'Space Grotesk', sans-serif;
+  letter-spacing: -3px; margin: 25px 0;
+}
+.gradient {
+  background: linear-gradient(100deg, #7de8ff, #b5a1ff 55%, #ff9fcb);
+  -webkit-background-clip: text; color: transparent;
+}
+.hero p { color: var(--muted); max-width: 520px; font-size: 15px; }
+.actions { display: flex; gap: 13px; flex-wrap: wrap; margin-top: 30px; }
+.btn {
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px;
+  color: white; background: rgba(255,255,255,.04); transition: .25s;
+}
+.btn:hover { transform: translateY(-3px); border-color: var(--cyan); }
+.btn-primary {
+  background: linear-gradient(110deg,#7de8ff,#b5a1ff);
+  color: #081020; font-weight: 800; border: 0;
+}
+.hero-note { display: flex; gap: 22px; margin-top: 42px; }
+.stat strong { display: block; font: 700 23px 'Space Grotesk'; }
+.stat span { color: var(--muted); font-size: 11px; }
+.space-art { min-height: 420px; display: grid; place-items: center; position: relative; }
+.orbit {
+  position: absolute; border: 1px solid rgba(167,190,255,.19);
+  border-radius: 50%; transform: rotate(-24deg);
+}
+.orbit.one { width: 290px; height: 150px; }
+.orbit.two { width: 390px; height: 210px; transform: rotate(35deg); }
+.sun {
+  width: 155px; height: 155px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #fff8d2, #ffd06b 30%, #ff8c8c 65%, #a44dbe);
+  box-shadow: 0 0 45px #ffb66b99, 0 0 100px #9a6bff55;
+  animation: breathe 4s ease-in-out infinite;
+}
+.planet {
+  position: absolute; border-radius: 50%;
+  background: linear-gradient(140deg,#b5f4ff,#4b7de4 50%,#27225d);
+  box-shadow: 0 0 30px #6d9bff55;
+  animation: float 5s ease-in-out infinite;
+}
+.planet.p1 { width: 52px; height: 52px; top: 45px; right: 48px; }
+.planet.p2 { width: 30px; height: 30px; bottom: 60px; left: 60px; background: linear-gradient(130deg,#ffd4b1,#ba6c9c,#493c8d); animation-delay: -2s; }
+.moon { position: absolute; width: 28px; height: 28px; top: 110px; left: 45px; border-radius: 50%; background: #e9e9fa; box-shadow: 0 0 25px #fff7; }
+.float-label {
+  position: absolute; padding: 8px 12px; border: 1px solid var(--line);
+  background: #10172cbb; backdrop-filter: blur(10px); border-radius: 10px;
+  font-size: 11px; color: var(--muted);
+}
+.label1 { top: 12px; left: 0; }
+.label2 { right: 0; bottom: 28px; }
+@keyframes breathe { 50% { transform: scale(1.06); filter: brightness(1.12); } }
+@keyframes float { 50% { transform: translateY(-13px); } }
+section { padding: 85px 0; scroll-margin-top: 75px; }
+.section-head { max-width: 650px; margin-bottom: 35px; }
+.kicker { color: var(--cyan); font-size: 11px; letter-spacing: 3px; font-weight: 700; }
+h2 { font: 700 clamp(30px,4vw,46px)/1.2 'Space Grotesk'; letter-spacing: -1.5px; margin: 12px 0; }
+.section-head p { color: var(--muted); font-size: 14px; }
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.tab {
+  border: 1px solid var(--line); color: var(--muted); background: var(--panel);
+  padding: 11px 16px; border-radius: 12px; transition: .25s;
+}
+.tab.active, .tab:hover { color: #07101e; background: var(--cyan); border-color: var(--cyan); }
+.lab {
+  display: grid; grid-template-columns: 1fr .85fr; gap: 24px;
+  border: 1px solid var(--line); border-radius: 22px;
+  background: linear-gradient(145deg,#121d35,#0d1326);
+  padding: 24px; overflow: hidden;
+}
+.scene {
+  min-height: 320px; border-radius: 16px; position: relative; overflow: hidden;
+  display: grid; place-items: center;
+  background: radial-gradient(ellipse,#1e3155,#0b1022 75%);
+}
+.scene svg { width: 100%; max-height: 340px; }
+.scene-info { padding: 12px 5px; }
+.scene-info h3 { font: 700 26px 'Space Grotesk'; margin-bottom: 12px; }
+.scene-info p { color: var(--muted); font-size: 13px; margin-bottom: 15px; }
+.fact {
+  padding: 13px; border-left: 2px solid var(--purple);
+  background: #b5a1ff0d; color: #d6d0ff; font-size: 12px; margin: 18px 0;
+}
+.range-wrap { margin-top: 20px; }
+.range-wrap label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 9px; }
+input[type=range] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+.cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 17px; }
+.card {
+  border: 1px solid var(--line); background: linear-gradient(150deg,#141e36,#0e1426);
+  padding: 23px; border-radius: 18px; transition: .3s;
+}
+.card:hover { transform: translateY(-7px); border-color: #7de8ff70; }
+.card-icon { font-size: 28px; margin-bottom: 16px; }
+.card h3 { font: 700 20px 'Space Grotesk'; margin-bottom: 10px; }
+.card p { color: var(--muted); font-size: 13px; }
+.card small { display: block; margin-top: 15px; color: var(--cyan); font-size: 11px; }
+.tide-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 25px; align-items: center; }
+.tide-controls { border: 1px solid var(--line); background: var(--panel); padding: 25px; border-radius: 20px; }
+.tide-controls p { color: var(--muted); font-size: 13px; margin: 12px 0; }
+.select-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.select-btn { flex: 1; min-width: 100px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #0b1121; color: var(--muted); }
+.select-btn.active { color: var(--cyan); border-color: var(--cyan); background: #7de8ff10; }
+.tide-visual {
+  min-height: 270px; border-radius: 20px; border: 1px solid var(--line);
+  display: grid; place-items: center; overflow: hidden;
+  background: radial-gradient(ellipse at center,#192c4a,#0b1022 75%);
+}
+.tide-visual svg { width: 100%; max-width: 550px; }
+.quiz-box {
+  max-width: 780px; margin: auto; border: 1px solid var(--line);
+  background: linear-gradient(145deg,#151f39,#0e1426); border-radius: 22px; padding: 28px;
+}
+.quiz-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; }
+.progress { height: 4px; background: #ffffff12; margin: 15px 0 25px; border-radius: 9px; overflow: hidden; }
+.progress div { height: 100%; width: 0; background: linear-gradient(90deg,var(--cyan),var(--purple)); transition: .3s; }
+#question { font: 600 23px 'Space Grotesk'; margin-bottom: 20px; }
+.answers { display: grid; gap: 10px; }
+.answer {
+  text-align: left; padding: 14px 16px; border: 1px solid var(--line);
+  border-radius: 12px; background: #ffffff04; color: var(--text); transition: .2s;
+}
+.answer:hover:not(:disabled) { border-color: var(--cyan); background: #7de8ff0c; }
+.answer.correct { border-color: #55e6a5; background: #55e6a51a; }
+.answer.wrong { border-color: #ff829d; background: #ff829d15; }
+#feedback { color: var(--muted); font-size: 13px; margin-top: 15px; min-height: 25px; }
+.quiz-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 10px; }
+footer { border-top: 1px solid var(--line); padding: 30px 0; color: var(--muted); font-size: 12px; }
+.footer-inner { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+footer a { color: var(--cyan); }
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s, transform .7s; }
+.reveal.visible { opacity: 1; transform: none; }
+@media(max-width:760px) {
+  .nav-links { display: none; position: absolute; top: 74px; left: 0; right: 0; padding: 22px 5%; background: #0b1022; border-bottom: 1px solid var(--line); flex-direction: column; align-items: flex-start; }
+  .nav-links.open { display: flex; }
+  .menu-btn { display: block; }
+  .hero { grid-template-columns: 1fr; padding-top: 55px; }
+  .space-art { min-height: 340px; }
+  .lab, .tide-layout { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .scene { min-height: 250px; }
+  .orbit.two { width: 320px; }
+  .hero-note { gap: 15px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="#home">COSMOS<span>.</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">Trang chủ</a>
+      <a href="#lab">Phòng thí nghiệm</a>
+      <a href="#knowledge">Kiến thức</a>
+      <a href="#tides">Thủy triều</a>
+      <a href="#quiz">Trắc nghiệm</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Mở menu">☰</button>
+  </div>
+</nav>
+
+<header class="container hero" id="home">
+  <div>
+    <div class="eyebrow"><span class="pulse"></span> KHÁM PHÁ KHOA HỌC VŨ TRỤ</div>
+    <h1>Vũ trụ luôn<br><span class="gradient">chuyển động.</span><br>Bạn có biết vì sao?</h1>
+    <p>Từ khoảnh khắc Mặt Trời biến mất sau Mặt Trăng đến những con sóng lên xuống mỗi ngày — tất cả đều kể một câu chuyện về chuyển động của các thiên thể.</p>
+    <div class="actions">
+      <a href="#lab" class="btn btn-primary">Bắt đầu khám phá ↗</a>
+      <a href="#knowledge" class="btn">Tìm hiểu kiến thức</a>
+    </div>
+    <div class="hero-note">
+      <div class="stat"><strong>01</strong><span>Nhật thực</span></div>
+      <div class="stat"><strong>02</strong><span>Nguyệt thực</span></div>
+      <div class="stat"><strong>03</strong><span>Thủy triều</span></div>
+    </div>
+  </div>
+  <div class="space-art" aria-label="Minh họa các thiên thể">
+    <div class="orbit one"></div><div class="orbit two"></div>
+    <div class="sun"></div><div class="planet p1"></div><div class="planet p2"></div><div class="moon"></div>
+    <div class="float-label label1">✦ Hệ Mặt Trời</div>
+    <div class="float-label label2">Ánh sáng · Trọng lực · Chuyển động</div>
+  </div>
+</header>
+
+<section id="lab">
+  <div class="container reveal">
+    <div class="section-head">
+      <div class="kicker">INTERACTIVE LAB / 01</div>
+      <h2>Phòng thí nghiệm<br><span class="gradient">thiên văn học</span></h2>
+      <p>Chọn một hiện tượng, sau đó kéo thanh trượt để khám phá cách vị trí của các thiên thể làm thay đổi những gì chúng ta quan sát được.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-scene="solar" role="tab" aria-selected="true">☀ Nhật thực</button>
+      <button class="tab" data-scene="lunar" role="tab" aria-selected="false">🌕 Nguyệt thực</button>
+      <button class="tab" data-scene="tide" role="tab" aria-selected="false">🌊 Thủy triều</button>
+    </div>
+    <div class="lab">
+      <div class="scene">
+        <svg id="solarScene" viewBox="0 0 600 340" role="img" aria-label="Sơ đồ Mặt Trời, Mặt Trăng và Trái Đất">
+          <defs>
+            <radialGradient id="sunGrad"><stop stop-color="#fff5bd"/><stop offset=".6" stop-color="#ffb84d"/><stop offset="1" stop-color="#ff754e"/></radialGradient>
+            <linearGradient id="earthGrad"><stop stop-color="#69d9ef"/><stop offset="1" stop-color="#2549ad"/></linearGradient>
+            <radialGradient id="moonGrad"><stop stop-color="#fff"/><stop offset="1" stop-color="#777f9d"/></radialGradient>
+          </defs>
+          <circle cx="82" cy="170" r="48" fill="url(#sunGrad)"/>
+          <g stroke="#ffca70" stroke-width="2" opacity=".6">
+            <path d="M82 108V98 M82 232V242 M20 170H10 M144 170H154 M38 126L29 117 M126 214L135 223 M38 214L29 223 M126 126L135 117"/>
+          </g>
+          <path d="M130 170 L420 170" stroke="#ffcc77" stroke-dasharray="5 8" opacity=".6"/>
+          <path d="M130 151 L420 116 L420 224 L130 189Z" fill="#ffbd6b" opacity=".09"/>
+          <circle cx="470" cy="170" r="57" fill="url(#earthGrad)"/>
+          <path d="M443 128l20 8 7 18-16 9-7 24-15-8-3-24z M482 191l17-7 15 9-10 19-19 5-9-13z" fill="#70d5a3" opacity=".8"/>
+          <circle cx="300" cy="170" r="17" fill="url(#moonGrad)"/>
+          <path d="M300 153 A17 17 0 0 0 300 187Z" fill="#343c58" opacity=".8"/>
+          <path d="M317 161L412 137 M317 179L412 203" stroke="#c6d4ff" stroke-dasharray="3 5" opacity=".4"/>
+          <text x="82" y="250" fill="#ffda91" font-size="13" text-anchor="middle">Mặt Trời</text>
+          <text x="300" y="215" fill="#d7ddf6" font-size="13" text-anchor="middle">Mặt Trăng</text>
+          <text x="470" y="250" fill="#a8e9ff" font-size="13" text-anchor="middle">Trái Đất</text>
+          <text x="300" y="45" fill="#9eaccb" font-size="12" text-anchor="middle">Ánh sáng truyền từ trái sang phải →</text>
+        </svg>
+        <svg id="lunarScene" viewBox="0 0 600 340" role="img" aria-label="Sơ đồ nguyệt thực" style="display:none">
+          <circle cx="82" cy="170" r="48" fill="#ffbf68"/>
+          <path d="M130 144L405 115L405 225L130 196Z" fill="#ffca76" opacity=".08"/>
+          <path d="M130 170H430" stroke="#ffd27d" stroke-dasharray="5 8" opacity=".6"/>
+          <circle cx="300" cy="170" r="35" fill="#3776bf"/>
+          <path d="M278 145l22 5 9 15-15 13-7 20-15-17z" fill="#68d6a2"/>
+          <path d="M330 150L470 120L470 220L330 190Z" fill="#000" opacity=".25"/>
+          <circle cx="485" cy="170" r="20" fill="#d6d9eb"/>
+          <path d="M485 150A20 20 0 0 1 485 190Z" fill="#666d83"/>
+          <text x="82" y="250" fill="#ffda91" font-size="13" text-anchor="middle">Mặt Trời</text>
+          <text x="300" y="230" fill="#a8e9ff" font-size="13" text-anchor="middle">Trái Đất</text>
+          <text x="485" y="220" fill="#d7ddf6" font-size="13" text-anchor="middle">Mặt Trăng</text>
+          <text x="300" y="45" fill="#9eaccb" font-size="12" text-anchor="middle">Bóng Trái Đất đổ về phía Mặt Trăng</text>
+        </svg>
+        <svg id="tideScene" viewBox="0 0 600 340" role="img" aria-label="Sơ đồ lực thủy triều" style="display:none">
+          <ellipse cx="290" cy="170" rx="135" ry="75" fill="#4085d9" opacity=".22"/>
+          <circle cx="290" cy="170" r="62" fill="#3179cf"/>
+          <path d="M260 132l22 5 9 18-18 14-8 21-18-18z M303 183l22-8 14 15-13 22-20 1z" fill="#5bd6a4"/>
+          <circle cx="495" cy="170" r="29" fill="#d5d8e8"/>
+          <path d="M495 141A29 29 0 0 1 495 199Z" fill="#717990"/>
+          <path d="M370 170H451" stroke="#9cbbff" stroke-dasharray="5 6"/>
+          <path d="M442 160L454 170L442 180" stroke="#9cbbff" fill="none" stroke-width="2"/>
+          <text x="290" y="270" fill="#a8e9ff" font-size="13" text-anchor="middle">Trái Đất và phần nước</text>
+          <text x="495" y="225" fill="#d7ddf6" font-size="13" text-anchor="middle">Mặt Trăng</text>
+          <text x="300" y="45" fill="#9eaccb" font-size="12" text-anchor="middle">Lực hấp dẫn góp phần tạo thủy triều</text>
+        </svg>
+      </div>
+      <div class="scene-info">
+        <div class="kicker" id="sceneKicker">HIỆN TƯỢNG 01</div>
+        <h3 id="sceneTitle">Nhật thực xảy ra thế nào?</h3>
+        <p id="sceneDesc">Khi Mặt Trăng đi qua giữa Mặt Trời và Trái Đất, nó che khuất một phần hoặc toàn bộ đĩa Mặt Trời đối với người quan sát ở một số khu vực trên Trái Đất.</p>
+        <div class="fact" id="sceneFact">Điều kiện quan trọng: ba thiên thể gần như nằm thẳng hàng vào kỳ trăng non.</div>
+        <div class="range-wrap" id="positionControl">
+          <label for="positionRange"><span>Vị trí Mặt Trăng</span><span id="rangeValue">50%</span></label>
+          <input type="range" id="positionRange" min="0" max="100" value="50">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="knowledge">
+  <div class="container reveal">
+    <div class="section-head">
+      <div class="kicker">THE SCIENCE / 02</div>
+      <h2>Ba hiện tượng,<br><span class="gradient">một vũ trụ kỳ diệu</span></h2>
+      <p>Những điều quen thuộc trên bầu trời và đại dương đều có thể giải thích bằng ánh sáng, chuyển động và lực hấp dẫn.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="card-icon">🌘</div>
+        <h3>Nhật thực</h3>
+        <p>Mặt Trăng nằm giữa Mặt Trời và Trái Đất. Bóng của Mặt Trăng quét qua một vùng nhỏ trên bề mặt Trái Đất.</p>
+        <small>THƯỜNG GẮN VỚI KỲ TRĂNG NON</small>
+      </article>
+      <article class="card">
+        <div class="card-icon">🌑</div>
+        <h3>Nguyệt thực</h3>
+        <p>Trái Đất nằm giữa Mặt Trời và Mặt Trăng. Mặt Trăng đi vào vùng bóng của Trái Đất và có thể chuyển màu đỏ đồng.</p>
+        <small>THƯỜNG GẮN VỚI KỲ TRĂNG TRÒN</small>
+      </article>
+      <article class="card">
+        <div class="card-icon">🌊</div>
+        <h3>Thủy triều</h3>
+        <p>Mực nước biển lên xuống chủ yếu do tác động hấp dẫn của Mặt Trăng và Mặt Trời, kết hợp với sự quay của Trái Đất.</p>
+        <small>DIỄN RA THEO CHU KỲ</small>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="tides">
+  <div class="container reveal">
+    <div class="section-head">
+      <div class="kicker">OCEAN & GRAVITY / 03</div>
+      <h2>Đại dương cũng<br><span class="gradient">chịu ảnh hưởng từ vũ trụ</span></h2>
+      <p>Khoảng cách và vị trí tương đối của Mặt Trăng, Mặt Trời ảnh hưởng đến biên độ thủy triều.</p>
+    </div>
+    <div class="tide-layout">
+      <div class="tide-controls">
+        <h3 style="font:700 24px 'Space Grotesk'">Thử thay đổi thủy triều</h3>
+        <p>Chọn kiểu thủy triều để xem minh họa sự khác nhau giữa biên độ triều lớn và nhỏ.</p>
+        <div class="select-row">
+          <button class="select-btn active" data-tide="spring">🌕 Triều cường</button>
+          <button class="select-btn" data-tide="neap">🌓 Triều kém</button>
+        </div>
+        <div class="fact" id="tideFact">Triều cường thường xuất hiện gần kỳ trăng non và trăng tròn, khi tác động của Mặt Trăng và Mặt Trời gần cùng phương.</div>
+      </div>
+      <div class="tide-visual">
+        <svg viewBox="0 0 550 290" role="img" aria-label="Minh họa biên độ thủy triều">
+          <defs>
+            <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="#70e5ff" stop-opacity=".8"/><stop offset="1" stop-color="#3268c5" stop-opacity=".15"/>
+            </linearGradient>
+          </defs>
+          <path id="waterShape" d="M0 135 Q55 70 110 135 T220 135 T330 135 T440 135 T550 135 L550 290 L0 290Z" fill="url(#waterGrad)"/>
+          <path id="waterLine" d="M0 135 Q55 70 110 135 T220 135 T330 135 T440 135 T550 135" fill="none" stroke="#86edff" stroke-width="3"/>
+          <path d="M0 185 Q70 160 140 185 T280 185 T420 185 T560 185" fill="none" stroke="#6baaff" opacity=".4" stroke-width="2"/>
+          <circle cx="275" cy="218" r="37" fill="#3169c5"/>
+          <path d="M254 193l18 2 10 14-15 13-5 16-15-13z M284 227l18-7 13 13-12 18-17-3z" fill="#5bd6a4"/>
+          <circle cx="275" cy="218" r="52" fill="none" stroke="#8daeff" stroke-opacity=".4"/>
+          <text x="275" y="280" fill="#dce8ff" font-size="12" text-anchor="middle">Trái Đất</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="container reveal">
+    <div class="section-head" style="margin-inline:auto;text-align:center">
+      <div class="kicker">CHECK YOUR KNOWLEDGE / 04</div>
+      <h2>Bạn hiểu vũ trụ<br><span class="gradient">đến đâu rồi?</span></h2>
+      <p>Trả lời ba câu hỏi nhanh để kiểm tra kiến thức vừa khám phá.</p>
+    </div>
+    <div class="quiz-box">
+      <div class="quiz-top"><span id="questionCount">CÂU HỎI 01 / 03</span><span id="scoreLabel">Điểm: 0</span></div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <h3 id="question">Nhật thực xảy ra khi thiên thể nào nằm giữa Mặt Trời và Trái Đất?</h3>
+      <div class="answers" id="answers"></div>
+      <div id="feedback" aria-live="polite"></div>
+      <div class="quiz-bottom">
+        <span style="font-size:11px;color:var(--muted)">Hãy chọn một đáp án.</span>
+        <button class="btn btn-primary" id="nextQuestion" disabled>Câu tiếp theo →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© 2026 COSMOS. Một hành trình khám phá vũ trụ.</span>
+    <span>Tham khảo: <a href="https://science.nasa.gov/eclipses/" target="_blank" rel="noopener">NASA</a> · <a href="https://oceanservice.noaa.gov/education/tutorial_tides/" target="_blank" rel="noopener">NOAA</a></span>
+  </div>
+</footer>
+
+<script>
+/* Sao nền */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+let stars = [];
+function resizeStars() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = innerWidth * dpr;
+  canvas.height = innerHeight * dpr;
+  canvas.style.width = innerWidth + "px";
+  canvas.style.height = innerHeight + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  stars = Array.from({length: Math.min(180, Math.floor(innerWidth / 7))}, () => ({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    r: Math.random() * 1.4 + .3,
+    a: Math.random() * .65 + .2,
+    speed: Math.random() * .008 + .002
+  }));
+}
+function drawStars() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  stars.forEach(s => {
+    s.a += s.speed;
+    const alpha = .25 + Math.abs(Math.sin(s.a)) * .65;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(210,225,255,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeStars();
+drawStars();
+window.addEventListener("resize", resizeStars);
+
+/* Menu trên điện thoại */
+document.getElementById("menuBtn").addEventListener("click", () => {
+  document.getElementById("navLinks").classList.toggle("open");
+});
+document.querySelectorAll(".nav-links a").forEach(a => a.addEventListener("click", () => {
+  document.getElementById("navLinks").classList.remove("open");
+}));
+
+/* Chuyển cảnh mô phỏng */
+const scenes = {
+  solar: {
+    kicker:"HIỆN TƯỢNG 01",
+    title:"Nhật thực xảy ra thế nào?",
+    desc:"Khi Mặt Trăng đi qua giữa Mặt Trời và Trái Đất, nó che khuất một phần hoặc toàn bộ đĩa Mặt Trời đối với người quan sát ở một số khu vực trên Trái Đất.",
+    fact:"Điều kiện quan trọng: ba thiên thể gần như nằm thẳng hàng vào kỳ trăng non."
+  },
+  lunar: {
+    kicker:"HIỆN TƯỢNG 02",
+    title:"Vì sao Mặt Trăng hóa đỏ?",
+    desc:"Khi Trái Đất nằm giữa Mặt Trời và Mặt Trăng, Mặt Trăng đi qua bóng Trái Đất. Ánh sáng đỏ bị khí quyển Trái Đất khúc xạ vào vùng bóng, khiến Mặt Trăng đôi khi có màu đỏ đồng.",
+    fact:"Nguyệt thực chỉ xảy ra vào kỳ trăng tròn, nhưng không phải trăng tròn nào cũng có nguyệt thực."
+  },
+  tide: {
+    kicker:"HIỆN TƯỢNG 03",
+    title:"Điều gì tạo nên thủy triều?",
+    desc:"Lực hấp dẫn của Mặt Trăng là yếu tố chính tạo ra thủy triều. Mặt Trời cũng góp phần làm biên độ triều lớn hơn hoặc nhỏ hơn tùy theo vị trí tương đối của hai thiên thể.",
+    fact:"Triều cường thường có biên độ lớn hơn triều kém; mức nước thực tế còn phụ thuộc hình dạng bờ biển và địa hình đáy biển."
+  }
+};
+const position = document.getElementById("positionRange");
+function updatePosition() {
+  const v = Number(position.value);
+  document.getElementById("rangeValue").textContent = v + "%";
+  const solarMoon = document.querySelector("#solarScene circle:nth-of-type(4)");
+  const lunarMoon = document.querySelector("#lunarScene circle:last-of-type");
+  if (solarMoon) solarMoon.setAttribute("cx", 190 + v * 2.2);
+  if (lunarMoon) lunarMoon.setAttribute("cx", 385 + v * 1.5);
+}
+position.addEventListener("input", updatePosition);
+
+document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(b => {
+    b.classList.remove("active");
+    b.setAttribute("aria-selected", "false");
+  });
+  btn.classList.add("active");
+  btn.setAttribute("aria-selected", "true");
+  const key = btn.dataset.scene;
+  document.getElementById("solarScene").style.display = key === "solar" ? "block" : "none";
+  document.getElementById("lunarScene").style.display = key === "lunar" ? "block" : "none";
+  document.getElementById("tideScene").style.display = key === "tide" ? "block" : "none";
+  document.getElementById("positionControl").style.display = key === "tide" ? "none" : "block";
+  document.getElementById("sceneKicker").textContent = scenes[key].kicker;
+  document.getElementById("sceneTitle").textContent = scenes[key].title;
+  document.getElementById("sceneDesc").textContent = scenes[key].desc;
+  document.getElementById("sceneFact").textContent = scenes[key].fact;
+  updatePosition();
+}));
+
+/* Minh họa thủy triều */
+function setTide(type) {
+  const spring = type === "spring";
+  const amp = spring ? 58 : 23;
+  document.getElementById("waterShape").setAttribute("d",
+    `M0 135 Q55 ${135-amp} 110 135 T220 135 T330 135 T440 135 T550 135 L550 290 L0 290Z`);
+  document.getElementById("waterLine").setAttribute("d",
+    `M0 135 Q55 ${135-amp} 110 135 T220 135 T330 135 T440 135 T550 135`);
+  document.getElementById("tideFact").textContent = spring
+    ? "Triều cường thường xuất hiện gần kỳ trăng non và trăng tròn, khi tác động của Mặt Trăng và Mặt Trời gần cùng phương."
+    : "Triều kém thường xuất hiện gần kỳ trăng bán nguyệt, khi hướng tác động của Mặt Trăng và Mặt Trời gần vuông góc nhau.";
+  document.querySelectorAll(".select-btn").forEach(b => b.classList.toggle("active", b.dataset.tide === type));
+}
+document.querySelectorAll(".select-btn").forEach(b => b.addEventListener("click", () => setTide(b.dataset.tide)));
+
+/* Trắc nghiệm */
+const questions = [
+  {
+    q:"Nhật thực xảy ra khi thiên thể nào nằm giữa Mặt Trời và Trái Đất?",
+    a:["Mặt Trăng","Sao Hỏa","Sao Kim","Sao Mộc"], correct:0,
+    explain:"Đúng rồi! Mặt Trăng đi qua giữa Mặt Trời và Trái Đất, tạo bóng trên một vùng của Trái Đất."
+  },
+  {
+    q:"Nguyệt thực chỉ có thể xảy ra vào giai đoạn nào của Mặt Trăng?",
+    a:["Trăng non","Trăng tròn","Trăng lưỡi liềm đầu tháng","Bất kỳ ngày nào"], correct:1,
+    explain:"Chính xác! Nguyệt thực xảy ra khi Mặt Trăng tròn đi vào vùng bóng của Trái Đất."
+  },
+  {
+    q:"Yếu tố nào là nguyên nhân chính tạo ra thủy triều trên Trái Đất?",
+    a:["Gió biển","Nhiệt độ đại dương","Lực hấp dẫn của Mặt Trăng","Mây và mưa"], correct:2,
+    explain:"Chính xác! Lực hấp dẫn của Mặt Trăng là yếu tố chính, còn Mặt Trời cũng góp phần ảnh hưởng đến thủy triều."
+  }
+];
+let qIndex = 0, score = 0, answered = false;
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const feedbackEl = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextQuestion");
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[qIndex];
+  document.getElementById("questionCount").textContent = `CÂU HỎI ${String(qIndex+1).padStart(2,"0")} / ${questions.length}`;
+  document.getElementById("scoreLabel").textContent = "Điểm: " + score;
+  document.getElementById("progressBar").style.width = (qIndex / questions.length * 100) + "%";
+  questionEl.textContent = q.q;
+  feedbackEl.textContent = "";
+  answersEl.innerHTML = "";
+  q.a.forEach((answer, i) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.textContent = String.fromCharCode(65+i) + ". " + answer;
+    btn.addEventListener("click", () => chooseAnswer(i, btn));
+    answersEl.appendChild(btn);
+  });
+  nextBtn.disabled = true;
+  nextBtn.textContent = qIndex === questions.length - 1 ? "Xem kết quả →" : "Câu tiếp theo →";
+}
+function chooseAnswer(index, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qIndex];
+  const buttons = [...answersEl.children];
+  buttons.forEach(b => b.disabled = true);
+  if (index === q.correct) {
+    score++;
+    btn.classList.add("correct");
+    feedbackEl.textContent = "✓ " + q.explain;
+  } else {
+    btn.classList.add("wrong");
+    buttons[q.correct].classList.add("correct");
+    feedbackEl.textContent = "Chưa đúng nhé. " + q.explain;
+  }
+  document.getElementById("scoreLabel").textContent = "Điểm: " + score;
+  nextBtn.disabled = false;
+}
+nextBtn.addEventListener("click", () => {
+  if (!answered) return;
+  if (qIndex < questions.length - 1) {
+    qIndex++;
+    renderQuestion();
+  } else {
+    document.getElementById("questionCount").textContent = "HOÀN THÀNH";
+    document.getElementById("progressBar").style.width = "100%";
+    questionEl.textContent = `Bạn đạt ${score}/${questions.length} điểm!`;
+    answersEl.innerHTML = "";
+    feedbackEl.textContent = score === 3
+      ? "Tuyệt vời! Bạn đã nắm vững các kiến thức cơ bản về ba hiện tượng."
+      : "Hãy xem lại phần kiến thức phía trên và thử sức một lần nữa nhé.";
+    nextBtn.textContent = "Làm lại ↻";
+    nextBtn.disabled = false;
+    nextBtn.onclick = () => {
+      qIndex = 0; score = 0; nextBtn.onclick = null; renderQuestion();
+    };
+  }
+});
+renderQuestion();
+
+/* Hiệu ứng xuất hiện khi cuộn */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("visible");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: .12 });
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
